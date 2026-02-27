@@ -1,3 +1,4 @@
+from datetime import datetime
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage
@@ -13,15 +14,15 @@ load_dotenv()
 SYSTEM_PROMPT = """You are a Personal Research Assistant. Your job is to help users \
 research topics thoroughly and accurately.
 
+Today's date is {today}.
+
 When answering questions:
 - Use the search tool to find up-to-date information when needed
+- ALWAYS use the search tool for: weather, news, current events, prices, or anything time-sensitive
+- Never guess or make up weather, dates, or real-time data — search for it instead
 - Synthesize information from multiple sources when available
 - Be concise but comprehensive
-- Cite key facts and indicate when information may be outdated
-- If an image is provided, analyze it and incorporate your observations into the answer
-
-You have access to a web search tool. Use it proactively for factual questions, \
-current events, or any topic where up-to-date information matters."""
+- If an image is provided, analyze it and incorporate your observations into the answer"""
 
 
 def build_graph():
@@ -42,7 +43,9 @@ def build_graph():
 
     def agent_node(state: ResearchState) -> dict:
         """Invoke the LLM with the full conversation history plus system prompt."""
-        messages = [SystemMessage(content=SYSTEM_PROMPT)] + state["messages"]
+        today = datetime.now().strftime("%A, %B %d, %Y")
+        prompt = SYSTEM_PROMPT.format(today=today)
+        messages = [SystemMessage(content=prompt)] + state["messages"]
         response = llm_with_tools.invoke(messages)
         return {"messages": [response]}
 
