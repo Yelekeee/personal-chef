@@ -6,7 +6,7 @@ An AI research assistant with a Streamlit chat UI and FastAPI backend, powered b
 
 ## Live Demo
 
-**https://streamlit-production-868c.up.railway.app**
+**https://yelnarsassistant.up.railway.app**
 
 Deployed on Railway as two services — Streamlit (public) and FastAPI (private internal network). The FastAPI backend is not publicly exposed; Streamlit communicates with it via Railway's private networking.
 
