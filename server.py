@@ -19,7 +19,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Personal Research Assistant",
+    title="Yelnar's Assistant",
     description="AI research agent with web search and multimodal support.",
     version="1.0.0",
     lifespan=lifespan,
