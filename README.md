@@ -6,10 +6,9 @@ An AI research assistant with a Streamlit chat UI and FastAPI backend, powered b
 
 ## Live Demo
 
-| Service | URL |
-|---|---|
-| Streamlit UI | https://streamlit-production-868c.up.railway.app |
-| FastAPI Docs | https://fastapi-production-6380.up.railway.app/docs |
+**https://streamlit-production-868c.up.railway.app**
+
+Deployed on Railway as two services — Streamlit (public) and FastAPI (private internal network). The FastAPI backend is not publicly exposed; Streamlit communicates with it via Railway's private networking.
 
 ## Features
 
