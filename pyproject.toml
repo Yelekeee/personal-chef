@@ -9,9 +9,12 @@ dependencies = [
     "langchain>=1.2.10",
     "langchain-community>=0.4.1",
     "langchain-openai>=1.1.10",
+    "langchain-tavily>=0.2.17",
     "langgraph>=0.2.0",
     "python-dotenv>=1.2.1",
     "python-multipart>=0.0.22",
+    "requests>=2.32.5",
+    "streamlit>=1.54.0",
     "tavily-python>=0.7.22",
     "uvicorn[standard]>=0.41.0",
 ]
