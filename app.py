@@ -1,0 +1,87 @@
+import uuid
+import requests
+import streamlit as st
+
+API_URL = "http://localhost:8000"
+
+st.set_page_config(page_title="Personal Research Assistant", page_icon="🔍", layout="wide")
+st.title("Personal Research Assistant")
+
+# ── Session state ──────────────────────────────────────────────────────────────
+if "thread_id" not in st.session_state:
+    st.session_state.thread_id = str(uuid.uuid4())
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# ── Sidebar ────────────────────────────────────────────────────────────────────
+with st.sidebar:
+    st.header("Conversation")
+    if st.button("New Conversation", use_container_width=True):
+        st.session_state.thread_id = str(uuid.uuid4())
+        st.session_state.messages = []
+        st.rerun()
+
+    st.divider()
+    st.header("Attach Image (optional)")
+    image_mode = st.radio("Source", ["None", "URL", "Upload file"], label_visibility="collapsed")
+
+    image_url = None
+    uploaded_file = None
+
+    if image_mode == "URL":
+        image_url = st.text_input("Image URL", placeholder="https://...")
+    elif image_mode == "Upload file":
+        uploaded_file = st.file_uploader("Image file", type=["jpg", "jpeg", "png", "gif", "webp"])
+        if uploaded_file:
+            st.image(uploaded_file, use_container_width=True)
+
+# ── Chat history ───────────────────────────────────────────────────────────────
+for msg in st.session_state.messages:
+    with st.chat_message(msg["role"]):
+        st.write(msg["content"])
+
+# ── Chat input ─────────────────────────────────────────────────────────────────
+if prompt := st.chat_input("Ask a research question..."):
+    # Show user message
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.write(prompt)
+
+    # Call FastAPI
+    with st.chat_message("assistant"):
+        with st.spinner("Researching..."):
+            try:
+                if image_mode == "URL" and image_url:
+                    resp = requests.post(
+                        f"{API_URL}/chat/image-url",
+                        json={
+                            "thread_id": st.session_state.thread_id,
+                            "image_url": image_url,
+                            "question": prompt,
+                        },
+                        timeout=60,
+                    )
+                elif image_mode == "Upload file" and uploaded_file:
+                    resp = requests.post(
+                        f"{API_URL}/chat/image-file",
+                        files={"file": (uploaded_file.name, uploaded_file.getvalue(), uploaded_file.type)},
+                        data={"thread_id": st.session_state.thread_id, "question": prompt},
+                        timeout=60,
+                    )
+                else:
+                    resp = requests.post(
+                        f"{API_URL}/chat",
+                        json={"thread_id": st.session_state.thread_id, "message": prompt},
+                        timeout=60,
+                    )
+
+                resp.raise_for_status()
+                answer = resp.json()["response"]
+
+            except requests.exceptions.ConnectionError:
+                answer = "Cannot reach the server. Make sure `uv run python server.py` is running."
+            except Exception as e:
+                answer = f"Error: {e}"
+
+        st.write(answer)
+        st.session_state.messages.append({"role": "assistant", "content": answer})
