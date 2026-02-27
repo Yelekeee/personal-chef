@@ -1,15 +1,13 @@
 # Personal Research Assistant
 
-A CLI-based AI research assistant that demonstrates all four Module 1 LangGraph concepts.
+An AI research assistant with a Streamlit chat UI and FastAPI backend, powered by LangGraph and Tavily search.
 
-## Module 1 Concepts Map
+## Features
 
-| Concept | File | Key API |
-|---|---|---|
-| **Foundational Models** | `src/agent/graph.py` | `ChatOpenAI`, `SystemMessage`, `.invoke()` |
-| **Tools** | `src/tools/search.py` + `graph.py` | `TavilySearchResults`, `.bind_tools()`, `ToolNode` |
-| **Short-term Memory** | `src/agent/state.py` + `graph.py` | `add_messages`, `MemorySaver`, `thread_id` |
-| **Multimodal** | `src/utils/multimodal.py` | `HumanMessage(content=[{type:text},{type:image_url}])` |
+- Web search via Tavily for real-time answers (news, weather, prices, current events)
+- Multimodal support — attach images by URL or file upload
+- Short-term memory per conversation thread
+- Streamlit chat UI + FastAPI backend running together
 
 ## Project Structure
 
@@ -17,49 +15,78 @@ A CLI-based AI research assistant that demonstrates all four Module 1 LangGraph 
 personal_chef/
 ├── src/
 │   ├── agent/
-│   │   ├── state.py        # ResearchState TypedDict  ← Memory concept
-│   │   └── graph.py        # ReAct graph              ← All 4 concepts
+│   │   ├── state.py        # ResearchState TypedDict
+│   │   └── graph.py        # ReAct LangGraph agent
 │   ├── tools/
-│   │   └── search.py       # Tavily tool              ← Tools concept
+│   │   └── search.py       # Tavily search tool
 │   └── utils/
-│       └── multimodal.py   # Image message builders   ← Multimodal concept
-├── main.py                  # CLI entry point
-├── .env.example             # API key template
+│       └── multimodal.py   # Image message builders
+├── app.py                  # Streamlit chat UI
+├── server.py               # FastAPI server
+├── run.py                  # Launcher — starts both servers
+├── main.py                 # CLI entry point (alternative)
+├── .env.example            # API key template
 └── pyproject.toml
 ```
 
 ## Setup
 
+**1. Clone and enter the project**
+
 ```bash
-# 1. Copy the environment template
+git clone https://github.com/Yelekeee/personal-chef.git
+cd personal-chef
+```
+
+**2. Copy the environment template and fill in your API keys**
+
+```bash
 cp .env.example .env
-
-# 2. Fill in your API keys in .env
-#    OPENAI_API_KEY  — from https://platform.openai.com
-#    TAVILY_API_KEY  — from https://tavily.com
-
-# 3. Install dependencies (adds langgraph and syncs lock file)
-uv add langgraph
 ```
 
-## Usage
+Open `.env` and set:
+- `OPENAI_API_KEY` — from https://platform.openai.com
+- `TAVILY_API_KEY` — from https://tavily.com
+
+**3. Install dependencies**
 
 ```bash
-python main.py
+uv sync
 ```
 
-### Commands
+## Running
+
+### Web UI (recommended)
+
+Starts both FastAPI (port 8000) and Streamlit (port 8501) with one command:
+
+```bash
+uv run python run.py
+```
+
+Then open http://localhost:8501 in your browser.
+
+### API only
+
+```bash
+uv run python server.py
+```
+
+API docs available at http://localhost:8000/docs.
+
+### CLI (alternative)
+
+```bash
+uv run python main.py
+```
+
+#### CLI Commands
 
 | Command | Description |
 |---|---|
-| `<question>` | Ask any research question — agent searches the web if needed |
-| `/image-url` | Attach a remote image by URL and ask a question about it |
-| `/image-file` | Attach a local image file and ask a question about it |
-| `/new` | Start a fresh conversation (clears short-term memory) |
+| `<question>` | Ask any research question |
+| `/image-url` | Attach a remote image by URL |
+| `/image-file` | Attach a local image file |
+| `/new` | Start a fresh conversation |
 | `/help` | Show help text |
 | `/quit` | Exit |
-
-### Example Session
-
-```
-You: What are the latest developments in fusion energy?
