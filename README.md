@@ -4,6 +4,13 @@ An AI research assistant with a Streamlit chat UI and FastAPI backend, powered b
 
 ![Yelnar's Assistant UI](assets/screenshot.png)
 
+## Live Demo
+
+| Service | URL |
+|---|---|
+| Streamlit UI | https://streamlit-production-868c.up.railway.app |
+| FastAPI Docs | https://fastapi-production-6380.up.railway.app/docs |
+
 ## Features
 
 - Web search via Tavily for real-time answers (news, weather, prices, current events)
