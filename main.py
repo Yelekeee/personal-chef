@@ -9,7 +9,7 @@ from src.utils.multimodal import create_image_url_message, create_image_file_mes
 load_dotenv()
 
 HELP_TEXT = """
-Personal Research Assistant — Commands
+Yelnar's Assistant — Commands
 ───────────────────────────────────────
   <question>      Ask any research question (web search included)
   /image-url      Attach an image via URL and ask about it
@@ -41,7 +41,7 @@ def run_query(graph, message: HumanMessage, thread_id: str) -> str:
 
 
 def main():
-    print("Personal Research Assistant")
+    print("Yelnar's Assistant")
     print("Type /help for available commands.\n")
 
     graph = build_graph()
