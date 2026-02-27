@@ -1,8 +1,8 @@
-# Personal Research Assistant
+# Yelnar's Assistant
 
 An AI research assistant with a Streamlit chat UI and FastAPI backend, powered by LangGraph and Tavily search.
 
-![Personal Research Assistant UI](assets/screenshot.png)
+![Yelnar's Assistant UI](assets/screenshot.png)
 
 ## Features
 
