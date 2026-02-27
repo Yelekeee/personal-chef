@@ -2,6 +2,8 @@
 
 An AI research assistant with a Streamlit chat UI and FastAPI backend, powered by LangGraph and Tavily search.
 
+![Personal Research Assistant UI](assets/screenshot.png)
+
 ## Features
 
 - Web search via Tavily for real-time answers (news, weather, prices, current events)
