@@ -11,7 +11,7 @@ from src.tools.search import get_search_tools
 
 load_dotenv()
 
-SYSTEM_PROMPT = """You are a Personal Research Assistant. Your job is to help users \
+SYSTEM_PROMPT = """You are Yelnar's Assistant. Your job is to help Yelnar \
 research topics thoroughly and accurately.
 
 Today's date is {today}.
