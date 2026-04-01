@@ -1,11 +1,15 @@
 import uuid
 import tempfile
 import os
-from fastapi import APIRouter, Request, UploadFile, File, Form, HTTPException
+from fastapi import APIRouter, Depends, Request, UploadFile, File, Form, HTTPException
 from langchain_core.messages import HumanMessage
+from sqlalchemy.orm import Session
 
 from src.api.models import ChatRequest, ImageUrlRequest, ChatResponse
 from src.utils.multimodal import create_image_url_message, create_image_file_message
+from src.db.database import get_db
+from src.db import crud
+from src.auth.security import decode_access_token
 
 router = APIRouter()
 
@@ -36,12 +40,26 @@ async def health():
 
 
 @router.post("/chat", response_model=ChatResponse)
-async def chat(request: Request, body: ChatRequest):
+async def chat(request: Request, body: ChatRequest, db: Session = Depends(get_db)):
     graph = request.app.state.graph
     try:
         response = await _run(graph, HumanMessage(content=body.message), body.thread_id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+    # Persist messages when token + session_id are provided
+    if body.token and body.session_id:
+        user_id = decode_access_token(body.token)
+        if user_id:
+            session = crud.get_chat_session(db, body.session_id, user_id)
+            if session:
+                crud.add_message(db, body.session_id, "user", body.message)
+                crud.add_message(db, body.session_id, "assistant", response)
+                # Set title from first user message
+                if session.title == "Жаңа әңгіме":
+                    title = body.message[:45] + ("…" if len(body.message) > 45 else "")
+                    crud.update_session_title(db, session, title)
+
     return ChatResponse(thread_id=body.thread_id, response=response)
 
 

@@ -8,10 +8,17 @@ load_dotenv()
 
 from src.agent.graph import build_graph  # noqa: E402 — after load_dotenv
 from src.api.routes import router
+from src.api.emotion_routes import emotion_router
+from src.api.auth_routes import auth_router
+from src.api.user_routes import user_router
+from src.api.history_routes import history_router
+from src.api.chat_history_routes import chat_history_router
+from src.db.database import create_all_tables
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    create_all_tables()
     # Build the graph once at startup; shared across all requests
     app.state.graph = build_graph()
     yield
@@ -33,6 +40,11 @@ app.add_middleware(
 )
 
 app.include_router(router)
+app.include_router(emotion_router)
+app.include_router(auth_router)
+app.include_router(user_router)
+app.include_router(history_router)
+app.include_router(chat_history_router)
 
 
 @app.get("/", include_in_schema=False)

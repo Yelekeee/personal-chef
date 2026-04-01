@@ -5,6 +5,8 @@ from pydantic import BaseModel, Field
 class ChatRequest(BaseModel):
     thread_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     message: str
+    token: str | None = None
+    session_id: str | None = None
 
 
 class ImageUrlRequest(BaseModel):

@@ -33,9 +33,9 @@ streamlit = subprocess.Popen(
 )
 processes.append(streamlit)
 
-print("FastAPI  → http://localhost:8000")
+print("FastAPI   → http://localhost:8000")
 print("Streamlit → http://localhost:8501")
-print("Press Ctrl+C to stop both.")
+print("Yelnar's Assistant іске қосылды. Тоқтату үшін Ctrl+C басыңыз.")
 
 for p in processes:
     p.wait()
