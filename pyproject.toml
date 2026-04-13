@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "aiosmtplib>=3.0.1",
+    "bcrypt>=4.0.0",
     "email-validator>=2.0.0",
     "fastapi>=0.133.1",
     "langchain>=1.2.10",
@@ -13,6 +14,7 @@ dependencies = [
     "langchain-openai>=1.1.10",
     "langchain-tavily>=0.2.17",
     "langgraph>=0.2.0",
+    "psycopg2-binary>=2.9.9",
     "python-dotenv>=1.2.1",
     "python-jose[cryptography]>=3.3.0",
     "python-multipart>=0.0.22",

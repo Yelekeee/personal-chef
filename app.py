@@ -47,7 +47,7 @@ EMOTION_ICONS = {
 st.set_page_config(
     page_title="Зарина's Assistant — Эмоционалды AI",
     page_icon="✦",
-    layout="wide",
+    layout="centered",
 )
 
 
@@ -225,6 +225,76 @@ hr {
 /* Auth pages: hide Streamlit's label gap when label_visibility=collapsed */
 .stTextInput > label[data-testid="stWidgetLabel"] {
     display: none;
+}
+
+/* ── Mobile responsive ─────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    /* Stack all columns vertically */
+    [data-testid="stHorizontalBlock"] {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+    }
+    [data-testid="column"] {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+        min-width: 100% !important;
+    }
+
+    /* Tighter container padding */
+    .main .block-container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        padding-top: 1rem !important;
+        padding-bottom: 5rem !important;
+        max-width: 100% !important;
+    }
+
+    /* Bigger touch targets for buttons */
+    .stButton > button {
+        min-height: 48px !important;
+        font-size: 1rem !important;
+    }
+
+    /* Larger inputs for mobile */
+    .stTextInput > div > div > input,
+    .stTextArea > div > div > textarea {
+        font-size: 16px !important; /* prevents iOS zoom-in on focus */
+        min-height: 48px !important;
+    }
+
+    /* Chat input comfortable on mobile */
+    .stChatInput textarea {
+        font-size: 16px !important;
+    }
+
+    /* Headings scale down */
+    h1 { font-size: 1.5rem !important; }
+    h2 { font-size: 1.25rem !important; }
+    h3 { font-size: 1.05rem !important; }
+
+    /* Scan choice cards — full width */
+    .scan-choice-card {
+        padding: 1.25rem 1rem !important;
+    }
+
+    /* Hero emotion card text */
+    .emotion-hero div[style*="font-size:3.5rem"] {
+        font-size: 2.5rem !important;
+    }
+    .emotion-hero div[style*="font-size:2rem"] {
+        font-size: 1.5rem !important;
+    }
+
+    /* History / result cards */
+    .yelnar-card {
+        padding: 1rem !important;
+    }
+
+    /* Sidebar toggle button — make it more tappable */
+    [data-testid="stSidebarCollapsedControl"] button {
+        width: 44px !important;
+        height: 44px !important;
+    }
 }
 </style>
 """, unsafe_allow_html=True)
