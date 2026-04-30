@@ -159,6 +159,11 @@ body, .stApp {
     text-align: center;
     box-shadow: 0 2px 12px rgba(0,0,0,0.07);
     transition: box-shadow 0.2s;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 .scan-choice-card:hover {
     box-shadow: 0 6px 24px rgba(0,0,0,0.12);
@@ -202,10 +207,22 @@ hr {
     opacity: 1 !important;
 }
 
-/* Chat input floating bar background */
-[data-testid="stBottomBlockContainer"] {
+/* Chat input floating bar — make entire bottom area white */
+[data-testid="stBottom"],
+[data-testid="stBottomBlockContainer"],
+[data-testid="stBottom"] > div,
+[data-testid="stBottomBlockContainer"] > div {
     background-color: #FFFFFF !important;
+}
+[data-testid="stBottom"] {
     border-top: 1px solid rgba(0,0,0,0.06) !important;
+}
+
+/* Ensure all main app wrappers are white */
+[data-testid="stAppViewContainer"],
+[data-testid="stMain"],
+[data-testid="stMainBlockContainer"] {
+    background-color: #FFFFFF !important;
 }
 
 /* Chat messages */
@@ -229,15 +246,20 @@ hr {
 
 /* ── Mobile responsive ─────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-    /* Stack all columns vertically */
+    /* Stack all columns vertically — force true full width */
     [data-testid="stHorizontalBlock"] {
         flex-direction: column !important;
-        gap: 0.5rem !important;
-    }
-    [data-testid="column"] {
+        gap: 0.75rem !important;
+        align-items: stretch !important;
         width: 100% !important;
-        flex: 1 1 100% !important;
-        min-width: 100% !important;
+    }
+    [data-testid="column"],
+    [data-testid="stHorizontalBlock"] > div {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        flex: 0 0 100% !important;
+        box-sizing: border-box !important;
     }
 
     /* Tighter container padding */
@@ -249,16 +271,19 @@ hr {
         max-width: 100% !important;
     }
 
-    /* Bigger touch targets for buttons */
+    /* Buttons — comfortable touch targets, no text wrap */
     .stButton > button {
         min-height: 48px !important;
-        font-size: 1rem !important;
+        font-size: 0.95rem !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
     }
 
     /* Larger inputs for mobile */
     .stTextInput > div > div > input,
     .stTextArea > div > div > textarea {
-        font-size: 16px !important; /* prevents iOS zoom-in on focus */
+        font-size: 16px !important;
         min-height: 48px !important;
     }
 
@@ -271,6 +296,13 @@ hr {
     h1 { font-size: 1.5rem !important; }
     h2 { font-size: 1.25rem !important; }
     h3 { font-size: 1.05rem !important; }
+
+    /* Auth page brand title — must fit one line on 375px */
+    div[style*="font-size:2rem"][style*="font-weight:800"],
+    div[style*="font-weight:800"][style*="font-size:2rem"] {
+        font-size: 1.2rem !important;
+        letter-spacing: -0.3px !important;
+    }
 
     /* Scan choice cards — full width */
     .scan-choice-card {
@@ -290,10 +322,29 @@ hr {
         padding: 1rem !important;
     }
 
-    /* Sidebar toggle button — make it more tappable */
+    /* Sidebar toggle — floating action button bottom-right */
+    [data-testid="stSidebarCollapsedControl"] {
+        position: fixed !important;
+        bottom: 24px !important;
+        right: 20px !important;
+        z-index: 9999 !important;
+        top: auto !important;
+        left: auto !important;
+    }
     [data-testid="stSidebarCollapsedControl"] button {
-        width: 44px !important;
-        height: 44px !important;
+        width: 56px !important;
+        height: 56px !important;
+        background: linear-gradient(135deg, #E8614F, #F4845F) !important;
+        border: none !important;
+        border-radius: 50% !important;
+        box-shadow: 0 4px 16px rgba(232,97,79,0.45) !important;
+    }
+    [data-testid="stSidebarCollapsedControl"] button svg {
+        fill: white !important;
+        stroke: white !important;
+        color: white !important;
+        width: 22px !important;
+        height: 22px !important;
     }
 }
 </style>
@@ -603,7 +654,7 @@ render_sidebar()
 # ── Auth Views ─────────────────────────────────────────────────────────────────
 def view_login():
     inject_auth_css()
-    _, col, _ = st.columns([1.5, 1, 1.5])
+    _, col, _ = st.columns([0.3, 2, 0.3])
     with col:
         st.markdown(
             "<div style='text-align:center;padding:2rem 0 1.5rem;'>"
@@ -674,7 +725,7 @@ def view_login():
 
 def view_signup():
     inject_auth_css()
-    _, col, _ = st.columns([1, 1.4, 1])
+    _, col, _ = st.columns([0.3, 2, 0.3])
     with col:
         st.markdown(
             "<div style='text-align:center;padding:2rem 0 1.5rem;'>"
@@ -729,7 +780,7 @@ def view_signup():
 
 def view_forgot_password():
     inject_auth_css()
-    _, col, _ = st.columns([1, 1.4, 1])
+    _, col, _ = st.columns([0.3, 2, 0.3])
     with col:
         st.markdown(
             "<div style='text-align:center;padding:2rem 0 1.5rem;'>"
@@ -769,7 +820,7 @@ def view_forgot_password():
 
 def view_reset_password():
     inject_auth_css()
-    _, col, _ = st.columns([1, 1.4, 1])
+    _, col, _ = st.columns([0.3, 2, 0.3])
     with col:
         st.markdown(
             "<div style='text-align:center;padding:2rem 0 1.5rem;'>"
@@ -818,6 +869,8 @@ def view_reset_password():
 
 
 def view_profile():
+    if st.button("← Артқа", key="back_profile"):
+        nav_to("dashboard")
     # White inputs + white eye-button background for this page
     st.markdown("""<style>
 .stTextInput [data-baseweb="input"] {
@@ -1046,6 +1099,8 @@ def _load_history_from_api() -> list[dict]:
 
 
 def view_scan_choose():
+    if st.button("← Артқа", key="back_scan_choose"):
+        nav_to("dashboard")
     st.markdown(
         "<h1 style='font-size:1.8rem;font-weight:700;margin-bottom:0.25rem;'>◎ Сканерлеу</h1>"
         "<p style='color:#6B7280;'>Эмоцияңызды бөлісу тәсілін таңдаңыз:</p>",
@@ -1082,12 +1137,11 @@ def view_scan_choose():
         if st.button("Мәтін жазу", type="primary", use_container_width=True, key="btn_text"):
             nav_to("scan_text")
 
-    st.markdown("<br>", unsafe_allow_html=True)
-    if st.button("← Артқа"):
-        nav_to("dashboard")
 
 
 def view_scan_face():
+    if st.button("← Артқа", key="back_scan_face"):
+        nav_to("scan_choose")
     st.markdown(
         "<h1 style='font-size:1.8rem;font-weight:700;margin-bottom:0.25rem;'>◎ Бет-әлпет сканері</h1>"
         "<p style='color:#6B7280;'>Бет-әлпетіңіздің фотосын түсіріңіз.</p>",
@@ -1124,12 +1178,11 @@ def view_scan_face():
                 except Exception as e:
                     st.error(f"Қате: {e}")
 
-    st.markdown("<br>", unsafe_allow_html=True)
-    if st.button("← Артқа"):
-        nav_to("scan_choose")
 
 
 def view_scan_text():
+    if st.button("← Артқа", key="back_scan_text"):
+        nav_to("scan_choose")
     st.markdown(
         "<h1 style='font-size:1.8rem;font-weight:700;margin-bottom:0.25rem;'>◎ Мәтін сканері</h1>"
         "<p style='color:#6B7280;'>Қазір өзіңізді қалай сезінетіндігіңізді сипаттаңыз:</p>",
@@ -1176,9 +1229,6 @@ def view_scan_text():
             except Exception as e:
                 st.error(f"Қате: {e}")
 
-    st.markdown("<br>", unsafe_allow_html=True)
-    if st.button("← Артқа"):
-        nav_to("scan_choose")
 
 
 def view_results():
@@ -1294,6 +1344,8 @@ def view_results():
 
 
 def view_chat():
+    if st.button("← Артқа", key="back_chat"):
+        nav_to("dashboard")
     st.markdown(
         "<h1 style='font-size:1.8rem;font-weight:700;margin-bottom:0.25rem;'>△ Чат</h1>"
         "<p style='color:#6B7280;'>AI серіктесіңізбен сезімдеріңізді бөлісіңіз</p>",
@@ -1422,6 +1474,8 @@ def _load_chat_session(session_id: str):
 
 
 def view_history():
+    if st.button("← Артқа", key="back_history"):
+        nav_to("dashboard")
     st.markdown(
         "<h1 style='font-size:1.8rem;font-weight:700;margin-bottom:0.25rem;'>≡ Тарих</h1>"
         "<p style='color:#6B7280;'>Барлық сканерлеу нәтижелері</p>",
